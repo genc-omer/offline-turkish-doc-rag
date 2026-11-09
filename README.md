@@ -73,6 +73,14 @@ source .venv/bin/activate        # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
+Windows has no `python3.12` command. There, create the environment with conda instead:
+
+```bash
+conda create -n turkish-rag python=3.12
+conda activate turkish-rag
+pip install -r requirements.txt
+```
+
 `requirements.txt` pins the main packages to the versions current in late July 2025. To also pin every transitive dependency to that date, install with [uv](https://docs.astral.sh/uv/):
 
 ```bash
@@ -112,6 +120,12 @@ The advanced version counts tokens with tiktoken's GPT-2 encoding. tiktoken down
 ## Usage
 
 Run all commands from the repository root.
+
+On Windows, set `PYTHONUTF8=1` first. The scripts print emoji and Turkish characters; when their output is piped or redirected, Python falls back to the legacy code page and stops with `UnicodeEncodeError`.
+
+```powershell
+$env:PYTHONUTF8 = "1"        # cmd: set PYTHONUTF8=1
+```
 
 ### basic
 
