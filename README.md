@@ -93,14 +93,22 @@ The code loads models from `models/`, relative to the directory you run it from.
 
 | Path | Used by | Model |
 |---|---|---|
-| `models/labse` | both versions | `sentence-transformers/LaBSE` (about 1.8 GB) |
-| `models/msmarco-ce` | advanced only | an MS MARCO cross-encoder (see note) |
+| `models/labse` | both versions | `sentence-transformers/LaBSE` (about 1.9 GB) |
+| `models/msmarco-ce` | advanced only | an MS MARCO cross-encoder (about 0.5 GB; see note) |
 
 ```bash
-python -c "from huggingface_hub import snapshot_download as d; d('sentence-transformers/LaBSE', local_dir='models/labse'); d('cross-encoder/mmarco-mMiniLMv2-L12-H384-v1', local_dir='models/msmarco-ce')"
+python -c "from huggingface_hub import snapshot_download as d; skip=['*.h5','*.msgpack','*.bin','onnx/*','openvino/*']; d('sentence-transformers/LaBSE', local_dir='models/labse', ignore_patterns=skip); d('cross-encoder/mmarco-mMiniLMv2-L12-H384-v1', local_dir='models/msmarco-ce', ignore_patterns=skip)"
 ```
 
-> **Reranker note:** the exact cross-encoder checkpoint used originally was not recorded. The multilingual mMARCO model above is the suggested replacement for Turkish text. The 0.20 score threshold in `query_rag.py` and `app.py` was tuned for the original model, so it may need adjusting.
+The `skip` patterns leave out the TensorFlow, Flax, ONNX, OpenVINO and PyTorch `.bin` copies of the weights; the code loads the safetensors files.
+
+Then switch the reranker to sigmoid scores: the 0.20 threshold in `query_rag.py` and `app.py` expects 0–1 scores, and the mMARCO model outputs raw logits.
+
+```bash
+python -c "import json, pathlib; p=pathlib.Path('models/msmarco-ce/config.json'); c=json.loads(p.read_text()); c['sbert_ce_default_activation_function']='torch.nn.modules.activation.Sigmoid'; p.write_text(json.dumps(c, indent=2))"
+```
+
+> **Reranker note:** the exact cross-encoder checkpoint used originally was not recorded. The multilingual mMARCO model above is the suggested replacement for Turkish text. With sigmoid scores it is on the same 0–1 scale as the 0.20 threshold, but that threshold was tuned for the original model, so it may still need adjusting.
 
 ### 3. Ollama
 
