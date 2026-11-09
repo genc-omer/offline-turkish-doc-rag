@@ -1,0 +1,19 @@
+# Vector indexes (chroma/ and advanced/chroma/)
+chroma/
+
+# Local models, downloaded separately (see README)
+models/
+
+# Documents
+data/
+*.pdf
+*.docx
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Streamlit
+.streamlit/
