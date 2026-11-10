@@ -158,6 +158,29 @@ The index is written to `advanced/chroma/<document slug>/`, separate from the ba
 
 `UNWANTED` in each `populate_database.py` lists lines to strip from every page (repeated headers, footers, "this page intentionally left blank" notes). Add the strings that recur in your own documents.
 
+## Example
+
+One run (11 November 2026) on two public Yıldız Teknik Üniversitesi (YTÜ) documents, each indexed with `--reset` in both versions:
+
+- Calendar: [YTÜ 2026-2027 undergraduate academic calendar (first-registration calendar)](https://ogi.yildiz.edu.tr/sites/ogi.yildiz.edu.tr/files/2026-2027-egitim-ogretim-yili-lisans-akademik-takvimi-ilk-kayit-takvimi.pdf), 1 page.
+- Regulation: [YTÜ Önlisans ve Lisans Eğitim-Öğretim Yönetmeliği](https://www.mevzuat.gov.tr/File/GeneratePdf?mevzuatNo=15812&mevzuatTur=UniversiteYonetmeligi&mevzuatTertip=5), the consolidated text from mevzuat.gov.tr, 6 pages.
+
+The answers below are copied verbatim from that run and were checked against the PDFs. Wrong answers are kept and marked.
+
+| Question | basic | advanced |
+|---|---|---|
+| Calendar: Güz yarıyılı dersleri hangi tarihte başlıyor? | Güz yarıyılı dersleri 1 28 Eylül 2026 Pazartesi'nde başlıyor. | Güz yarıyılı derslerinin başlangıcı 1 Pazartesi'nden 28 Eylül 2026'ta oluyor. |
+| Calendar: Güz dönemi katkı payı ödemeleri hangi tarihler arasında? | Güz dönemi katkı payı ödemeleri 14 Eylül-09 Ekim 2026 arasında yapılacaktır. | Cevap: Katkı payı ödeme sadece Güz döneminde yapılacaktır ve 14 Eylül-09 Ekim 2026 aralığındadır.<br>**Note:** the dates are right, but "sadece Güz döneminde" is not in the calendar. |
+| Regulation: Lisans programları için azami öğrenim süresi kaç yıl? | Lisans programları için azami öğrenim süresi yedi yıldır. | Azami öğretim süresi lisans programlarında yedi yıldır. |
+| Regulation: BA harf notunun katsayısı nedir? | Başarı notu katsayısı BA harfi için 3.00'dur.<br>**Wrong:** Madde 27 gives 3.50. | Üzgünüm, sorduğunuz sorunun cevabı belgede yok.<br>**Wrong:** the answer is in Madde 27. |
+| Regulation: Yaz okulu ücreti ne kadar? | Üzgünüm, sorduğunuz sorunun cevabı belgede yok. | Üzgünüm, sorduğunuz sorunun cevabı belgede yok. |
+
+- Both answers in the first row give the right date, 28 Eylül 2026; the stray "1" is the table's day-count cell.
+- The last row is the expected result: the regulation mentions the summer school but states no fee.
+- The advanced version extracted 18 table chunks from the calendar and 2 from the regulation. Both of the regulation's chunks are the amendment list on its last page. The letter-grade table in Madde 27 has no ruled lines in this PDF, so it was not extracted as a table; it is indexed as plain text with one cell per line. For the BA question the advanced version retrieved no context.
+
+Models: LaBSE embeddings, the `cross-encoder/mmarco-mMiniLMv2-L12-H384-v1` reranker with sigmoid scores (advanced only), and Mistral 7B Instruct v0.3 (`mistral:v0.3`) through Ollama.
+
 ## Known limitations
 
 The code is kept as it was built; these issues are documented rather than patched.
